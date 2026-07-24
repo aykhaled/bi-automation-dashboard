@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-07-24T23:36:59+00:00",
+  "currency": "GBP",
+  "source": {
+    "file": "data/raw/online_retail_II.csv",
+    "rows_read": 1067371,
+    "date_min": "2009-12-01 07:45:00",
+    "date_max": "2011-12-09 12:50:00",
+    "unparsed_dates": 0
+  },
+  "rules_applied": [
+    {
+      "rule": "drop_exact_duplicates",
+      "description": "Identical rows repeated in the source extract.",
+      "rows_before": 1067371,
+      "rows_after": 1033036,
+      "rows_dropped": 34335,
+      "pct_dropped": 3.217
+    },
+    {
+      "rule": "split_cancellations",
+      "description": "Invoices prefixed 'C' routed to the returns frame.",
+      "rows_before": 1033036,
+      "rows_after": 1013932,
+      "rows_dropped": 19104,
+      "pct_dropped": 1.849
+    },
+    {
+      "rule": "drop_non_product_lines",
+      "description": "Postage, discounts, bank charges and manual adjustments.",
+      "rows_before": 1013932,
+      "rows_after": 1009142,
+      "rows_dropped": 4790,
+      "pct_dropped": 0.472
+    },
+    {
+      "rule": "drop_non_positive_quantity",
+      "description": "Sales rows must have quantity greater than zero.",
+      "rows_before": 1009142,
+      "rows_after": 1005780,
+      "rows_dropped": 3362,
+      "pct_dropped": 0.333
+    },
+    {
+      "rule": "drop_non_positive_price",
+      "description": "Unit price must exceed 0.",
+      "rows_before": 1005780,
+      "rows_after": 1003214,
+      "rows_dropped": 2566,
+      "pct_dropped": 0.255
+    }
+  ],
+  "outputs": {
+    "sales_rows": 1003214,
+    "returns_rows": 17914,
+    "retention_pct": 93.99
+  },
+  "kpis": {
+    "gross_revenue": 19642692.15,
+    "returns_value": -716425.97,
+    "net_revenue": 18926266.18,
+    "return_rate_pct": 3.65,
+    "orders": 39516,
+    "customers": 5852,
+    "products": 4878,
+    "rows_with_customer_pct": 77.41
+  },
+  "null_rates_after_cleaning": {
+    "transaction_id": 0.0,
+    "date": 0.0,
+    "customer_id": 0.2259,
+    "product_id": 0.0,
+    "product_name": 0.0,
+    "quantity": 0.0,
+    "unit_price": 0.0,
+    "region": 0.0,
+    "line_revenue": 0.0,
+    "has_customer_id": 0.0
+  }
+}

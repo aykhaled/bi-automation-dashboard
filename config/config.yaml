@@ -1,0 +1,27 @@
+source:
+  path: data/raw/online_retail_II.csv
+  type: csv
+
+columns:
+  transaction_id: Invoice
+  date: InvoiceDate
+  customer_id: Customer ID
+  product_id: StockCode
+  product_name: Description
+  quantity: Quantity
+  unit_price: Price
+  region: Country
+
+business_rules:
+  currency: GBP
+  cancellation_prefix: "C"
+  churn_window_days: 90
+  min_order_value: 0
+  drop_missing_customer: false
+  product_code_pattern: "^\\d{5}"   # real SKUs start with 5 digits
+  drop_exact_duplicates: true
+
+report:
+  frequency: weekly
+  recipient_role: "Head of E-commerce"
+  tone: concise executive
