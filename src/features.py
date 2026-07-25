@@ -200,6 +200,28 @@ def daily_series(sales: pd.DataFrame, returns: pd.DataFrame) -> pd.DataFrame:
     return out.sort_index().reset_index()
 
 
+def daily_by_region(sales: pd.DataFrame) -> pd.DataFrame:
+    """Daily aggregates split by region.
+
+    Exists so the dashboard can filter by region without loading the 1M-row
+    sales frame. ~600 days x ~40 regions is a few thousand rows; the app stays
+    small and cold-starts fast during a client demo.
+    """
+    d = sales.assign(day=sales["date"].dt.normalize())
+    out = (
+        d.groupby(["day", "region"], observed=True)
+        .agg(
+            revenue=("line_revenue", "sum"),
+            orders=("transaction_id", "nunique"),
+            units=("quantity", "sum"),
+            customers=("customer_id", "nunique"),
+        )
+        .reset_index()
+        .rename(columns={"day": "date"})
+    )
+    return out.sort_values(["date", "region"]).reset_index(drop=True)
+
+
 def product_summary(sales: pd.DataFrame, returns: pd.DataFrame) -> pd.DataFrame:
     p = sales.groupby("product_id", observed=True).agg(
         product_name=("product_name", "last"),
@@ -222,6 +244,7 @@ def run(config: dict) -> dict:
     train, val = build_training_panel(sales, returns, config)
     scoring = build_scoring_frame(sales, returns, config)
     daily = daily_series(sales, returns)
+    region_daily = daily_by_region(sales)
     products = product_summary(sales, returns)
 
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
@@ -229,6 +252,7 @@ def run(config: dict) -> dict:
     val.to_parquet(PROCESSED_DIR / "val_panel.parquet", index=False)
     scoring.to_parquet(PROCESSED_DIR / "scoring_frame.parquet", index=False)
     daily.to_parquet(PROCESSED_DIR / "daily_series.parquet", index=False)
+    region_daily.to_parquet(PROCESSED_DIR / "daily_by_region.parquet", index=False)
     products.to_parquet(PROCESSED_DIR / "product_summary.parquet", index=False)
 
     return {
@@ -240,6 +264,7 @@ def run(config: dict) -> dict:
         "val_churn_rate": float(val["churned"].mean()),
         "scoring_rows": len(scoring),
         "trading_days": len(daily),
+        "region_daily_rows": len(region_daily),
         "products": len(products),
     }
 
@@ -256,4 +281,5 @@ if __name__ == "__main__":
     print(f"  churn rate   : {stats['val_churn_rate']:.1%}")
     print(f"Scoring frame  : {stats['scoring_rows']:,} customers")
     print(f"Trading days   : {stats['trading_days']:,}")
+    print(f"Region-days    : {stats['region_daily_rows']:,}")
     print(f"Products       : {stats['products']:,}\n")
