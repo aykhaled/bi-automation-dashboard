@@ -25,3 +25,18 @@ report:
   frequency: weekly
   recipient_role: "Head of E-commerce"
   tone: concise executive
+
+modeling:
+  lookback_days: 365          # customer must have purchased within this window to be scored
+  snapshot_spacing_days: 30   # gap between training snapshots
+  n_train_snapshots: 10
+  min_history_days: 180       # snapshot needs at least this much prior data
+  at_risk_decile: 0.10
+  max_iter: 250
+  learning_rate: 0.06
+  random_state: 42
+
+anomaly:
+  window_days: 28
+  z_threshold: 2.5
+  min_periods: 14

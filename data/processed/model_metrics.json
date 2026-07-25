@@ -1,0 +1,198 @@
+{
+  "model": {
+    "train": {
+      "roc_auc": 0.8726785286183203,
+      "average_precision": 0.9085780150231945,
+      "base_churn_rate": 0.6094,
+      "top_decile_n": 4109,
+      "precision_at_decile": 0.9837,
+      "recall_at_decile": 0.1614,
+      "lift_at_decile": 1.614,
+      "mean_predicted_prob": 0.6094,
+      "actual_churn_rate": 0.6094,
+      "calibration_gap": -0.0
+    },
+    "validation": {
+      "roc_auc": 0.7374280604723584,
+      "average_precision": 0.6859813873219307,
+      "base_churn_rate": 0.4928,
+      "top_decile_n": 431,
+      "precision_at_decile": 0.7332,
+      "recall_at_decile": 0.1489,
+      "lift_at_decile": 1.488,
+      "mean_predicted_prob": 0.4147,
+      "actual_churn_rate": 0.4928,
+      "calibration_gap": -0.0781
+    },
+    "validation_snapshot": "2011-09-10",
+    "n_train_rows": 41086,
+    "n_train_snapshots": 10,
+    "feature_importance": [
+      {
+        "feature": "active_months",
+        "importance": 0.03061,
+        "std": 0.00465
+      },
+      {
+        "feature": "avg_gap_days",
+        "importance": 0.02271,
+        "std": 0.00187
+      },
+      {
+        "feature": "revenue_365d",
+        "importance": 0.02042,
+        "std": 0.00315
+      },
+      {
+        "feature": "recency_days",
+        "importance": 0.01161,
+        "std": 0.003
+      },
+      {
+        "feature": "distinct_products",
+        "importance": 0.0095,
+        "std": 0.00207
+      },
+      {
+        "feature": "revenue_90d",
+        "importance": 0.00506,
+        "std": 0.00057
+      },
+      {
+        "feature": "lines_per_order",
+        "importance": 0.00427,
+        "std": 0.00173
+      },
+      {
+        "feature": "monetary",
+        "importance": 0.00264,
+        "std": 0.00146
+      },
+      {
+        "feature": "gap_ratio",
+        "importance": 0.00192,
+        "std": 0.00165
+      },
+      {
+        "feature": "aov",
+        "importance": 0.00183,
+        "std": 0.00081
+      },
+      {
+        "feature": "return_rate",
+        "importance": 0.00172,
+        "std": 0.00203
+      },
+      {
+        "feature": "region",
+        "importance": 0.00114,
+        "std": 0.0009
+      },
+      {
+        "feature": "orders_90d",
+        "importance": 0.00055,
+        "std": 0.0007
+      },
+      {
+        "feature": "month_sin",
+        "importance": 0.0,
+        "std": 0.0
+      },
+      {
+        "feature": "month_cos",
+        "importance": 0.0,
+        "std": 0.0
+      },
+      {
+        "feature": "frequency",
+        "importance": -0.00401,
+        "std": 0.00103
+      },
+      {
+        "feature": "tenure_days",
+        "importance": -0.00505,
+        "std": 0.00093
+      }
+    ]
+  },
+  "risk": {
+    "scoring_snapshot": "2011-12-09",
+    "customers_scored": 4270,
+    "at_risk_customers": 427,
+    "probability_threshold": 0.9084,
+    "revenue_at_risk_ttm": 306494.1,
+    "revenue_at_risk_lifetime": 520019.02,
+    "ttm_revenue_all_customers": 8282355.77,
+    "share_of_ttm_revenue_pct": 3.7,
+    "median_recency_days_at_risk": 202
+  },
+  "seasonality": [
+    {
+      "snapshot_date": "2010-09-15",
+      "customers": 3374,
+      "churn_rate": 42.5,
+      "label_window_ends": "2010-12-14"
+    },
+    {
+      "snapshot_date": "2010-10-15",
+      "customers": 3731,
+      "churn_rate": 51.2,
+      "label_window_ends": "2011-01-13"
+    },
+    {
+      "snapshot_date": "2010-11-14",
+      "customers": 4051,
+      "churn_rate": 59.9,
+      "label_window_ends": "2011-02-12"
+    },
+    {
+      "snapshot_date": "2010-12-14",
+      "customers": 4217,
+      "churn_rate": 69.4,
+      "label_window_ends": "2011-03-14"
+    },
+    {
+      "snapshot_date": "2011-01-13",
+      "customers": 4217,
+      "churn_rate": 65.6,
+      "label_window_ends": "2011-04-13"
+    },
+    {
+      "snapshot_date": "2011-02-12",
+      "customers": 4232,
+      "churn_rate": 64.0,
+      "label_window_ends": "2011-05-13"
+    },
+    {
+      "snapshot_date": "2011-03-14",
+      "customers": 4285,
+      "churn_rate": 62.8,
+      "label_window_ends": "2011-06-12"
+    },
+    {
+      "snapshot_date": "2011-04-13",
+      "customers": 4338,
+      "churn_rate": 62.6,
+      "label_window_ends": "2011-07-12"
+    },
+    {
+      "snapshot_date": "2011-05-13",
+      "customers": 4323,
+      "churn_rate": 62.5,
+      "label_window_ends": "2011-08-11"
+    },
+    {
+      "snapshot_date": "2011-06-12",
+      "customers": 4318,
+      "churn_rate": 63.9,
+      "label_window_ends": "2011-09-10"
+    }
+  ],
+  "anomalies": {
+    "n_detected": 29,
+    "n_spikes": 28,
+    "n_drops": 1,
+    "trading_days_evaluated": 590
+  },
+  "reporting_note": "Revenue at risk is the observed trailing-12-month revenue of the top-decile cohort by churn probability. Not a probability-weighted expectation: seasonal base-rate variation makes absolute probabilities unreliable while preserving rank order."
+}
