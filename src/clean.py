@@ -128,7 +128,10 @@ def build_quality_report(sales, returns, log, ingest_stats, config) -> dict:
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "currency": config["business_rules"]["currency"],
         "source": {
-            "file": ingest_stats["source_file"],
+            # as_posix() so the artifact is byte-identical whether the pipeline
+            # ran on macOS, Windows or the Linux deploy target. A Windows path
+            # rendering in the deployed Data Quality tab looks like a mistake.
+            "file": Path(ingest_stats["source_file"]).as_posix(),
             "rows_read": ingest_stats["rows_read"],
             "date_min": ingest_stats["date_min"],
             "date_max": ingest_stats["date_max"],
