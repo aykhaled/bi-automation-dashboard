@@ -9,3 +9,5 @@ data/raw/
 # Generated reports: ignore all, except one committed sample as proof of output
 reports/*
 !reports/sample_weekly_report.html
+# The dashboard reads this for its narrative panel; it must reach the deploy.
+!reports/latest_narrative.json

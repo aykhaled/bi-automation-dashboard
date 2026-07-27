@@ -1,0 +1,6 @@
+{
+  "text": "Net revenue increased to GBP 335,132, up 11% from GBP 302,156. Gross revenue rose significantly to GBP 507,969, a 66% increase, influenced by a flagged order. Invoice 581483 accounted for GBP 168,470, representing 33% of gross revenue and is likely cancelled, making net revenue the reliable figure. Orders decreased to 575, down 12%, and active customers fell to 463, down 9%. Customer risk is notable, with GBP 306,494 at risk from the top-decile cohort by churn probability. The highest at-risk customer generated GBP 77,184 over the past year and has not ordered in 324 days. Focus on strategies to retain at-risk customers.",
+  "model": "gpt-4o-mini",
+  "grounded": true,
+  "generated_at": "2026-07-27T06:13:26+00:00"
+}
