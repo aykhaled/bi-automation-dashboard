@@ -12,13 +12,13 @@ the previous one from data/processed/.
 from __future__ import annotations
 
 import argparse
-import sys
 import time
 
 from src.ingest import load_config, load_raw
 from src.clean import run as run_clean, print_summary
 from src.features import run as run_features
 from src.models import run as run_models
+from src.report import run as run_report
 
 STAGES = ("ingest", "clean", "features", "models", "report", "all")
 
@@ -68,9 +68,15 @@ def main() -> int:
             return 0
 
     if stage in ("report", "all"):
-        print("Stage 'report' not implemented yet (Session 4).", file=sys.stderr)
+        rep = run_report(config)
+        print(f"Report    : {rep['period']} | {rep['words']} words | "
+              f"{rep['model']}"
+              f"{' | concentration flagged' if rep['concentration_flagged'] else ''}")
+        print(f"Written   : {rep['html_path']}")
+        if rep["note"]:
+            print(f"Note      : {rep['note']}")
         if stage == "report":
-            return 1
+            return 0
 
     print(f"\nPipeline completed in {time.perf_counter() - started:.1f}s")
     return 0

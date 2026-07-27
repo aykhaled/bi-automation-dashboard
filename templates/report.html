@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weekly Performance Summary — {{ m.period.end }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:24px 12px;">
+<tr><td align="center">
+<table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:100%;background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,.12);">
+
+  <!-- header -->
+  <tr><td style="background:#1e293b;padding:22px 28px;">
+    <div style="color:#ffffff;font-size:17px;font-weight:600;letter-spacing:-.2px;">
+      {{ cfg.report.frequency|capitalize }} Performance Summary
+    </div>
+    <div style="color:#94a3b8;font-size:12px;padding-top:4px;">
+      {{ m.period.start }} to {{ m.period.end }} &middot;
+      {{ m.period.trading_days }} trading days &middot;
+      prepared for the {{ cfg.report.recipient_role }}
+    </div>
+  </td></tr>
+
+  <!-- narrative -->
+  <tr><td style="padding:26px 28px 6px 28px;">
+    <div style="font-size:15px;line-height:1.65;color:#0f172a;">
+      {{ narrative.text }}
+    </div>
+  </td></tr>
+
+  <!-- order concentration warning -->
+  {% if m.order_concentration.flagged %}
+  <tr><td style="padding:18px 28px 0 28px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+           style="background:#fffbeb;border-left:3px solid #d97706;border-radius:0 6px 6px 0;">
+      <tr><td style="padding:14px 16px;font-size:13px;color:#0f172a;line-height:1.6;">
+        <strong>Single-order concentration.</strong>
+        Invoice {{ m.order_concentration.invoice }} on
+        {{ m.order_concentration.date }} accounts for
+        {{ m.currency }} {{ m.order_concentration.revenue|money }} —
+        {{ m.order_concentration.largest_order_share_pct }}% of gross revenue
+        this period{% if m.order_concentration.likely_cancelled %},
+        and a cancellation of matching value was recorded{% endif %}.
+        <div style="color:#78716c;font-size:11px;padding-top:6px;">
+          {{ m.order_concentration.note }}
+        </div>
+      </td></tr>
+    </table>
+  </td></tr>
+  {% endif %}
+
+  <!-- headline metrics -->
+  <tr><td style="padding:20px 28px 4px 28px;">
+    <div style="font-size:11px;font-weight:700;color:#64748b;letter-spacing:.9px;padding-bottom:10px;">
+      HEADLINE METRICS
+    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;border-collapse:collapse;">
+      <tr style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.5px;">
+        <td style="padding:0 0 6px 0;">Metric</td>
+        <td align="right" style="padding:0 0 6px 0;">This period</td>
+        <td align="right" style="padding:0 0 6px 0;">Previous</td>
+        <td align="right" style="padding:0 0 6px 0;">Change</td>
+      </tr>
+      {% set rows = [
+        ('Net revenue', m.headline.net_revenue, true, true),
+        ('Gross revenue', m.headline.gross_revenue, true, false),
+        ('Orders', m.headline.orders, false, false),
+        ('Units', m.headline.units, false, false),
+        ('Average order value', m.headline.average_order_value, true, false),
+        ('Active customers', m.headline.active_customers, false, false),
+        ('Returns value', m.headline.returns_value, true, false)
+      ] %}
+      {% for label, b, is_money, is_lead in rows %}
+      <tr style="border-top:1px solid #e2e8f0;{% if is_lead %}background:#f8fafc;{% endif %}">
+        <td style="padding:{% if is_lead %}11px{% else %}9px{% endif %} 0 {% if is_lead %}11px{% else %}9px{% endif %} 0;color:#0f172a;{% if is_lead %}font-weight:600;{% endif %}">
+          {{ label }}
+        </td>
+        <td align="right" style="padding:9px 0;color:#0f172a;font-weight:600;{% if is_lead %}font-size:14px;{% endif %}">
+          {% if is_money %}{{ m.currency }} {% endif %}{{ b.current|money }}
+        </td>
+        <td align="right" style="padding:9px 0;color:#94a3b8;">
+          {% if is_money %}{{ m.currency }} {% endif %}{{ b.previous|money }}
+        </td>
+        <td align="right" style="padding:9px 0;font-weight:600;
+          {% if b.delta_pct is none %}color:#94a3b8;
+          {% elif b.delta_pct > 0 %}color:#15803d;
+          {% elif b.delta_pct < 0 %}color:#b91c1c;
+          {% else %}color:#64748b;{% endif %}">
+          {{ b.delta_pct|signed }}
+        </td>
+      </tr>
+      {% endfor %}
+      <tr style="border-top:1px solid #e2e8f0;">
+        <td style="padding:9px 0;color:#0f172a;">Return rate</td>
+        <td align="right" style="padding:9px 0;color:#0f172a;font-weight:600;">
+          {{ m.headline.return_rate_pct.current }}%
+        </td>
+        <td align="right" style="padding:9px 0;color:#94a3b8;">
+          {{ m.headline.return_rate_pct.previous }}%
+        </td>
+        <td align="right" style="padding:9px 0;font-weight:600;
+          {% if m.headline.return_rate_pct.delta_pp > 0 %}color:#b91c1c;
+          {% elif m.headline.return_rate_pct.delta_pp < 0 %}color:#15803d;
+          {% else %}color:#64748b;{% endif %}">
+          {{ '%+.1f'|format(m.headline.return_rate_pct.delta_pp) }} pp
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <!-- customer risk -->
+  <tr><td style="padding:22px 28px 4px 28px;">
+    <div style="font-size:11px;font-weight:700;color:#64748b;letter-spacing:.9px;padding-bottom:10px;">
+      CUSTOMER RISK
+    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+           style="background:#fef2f2;border-left:3px solid #dc2626;border-radius:0 6px 6px 0;">
+      <tr><td style="padding:14px 16px;font-size:13px;color:#0f172a;line-height:1.6;">
+        <strong>{{ m.customer_risk.at_risk_customers }}</strong> of
+        {{ m.customer_risk.customers_scored }} active customers are in the
+        highest-risk decile, carrying
+        <strong>{{ m.currency }} {{ m.customer_risk.revenue_at_risk_ttm|money }}</strong>
+        of trailing-twelve-month revenue
+        ({{ m.customer_risk.share_of_ttm_revenue_pct }}% of the total).
+        <div style="color:#64748b;font-size:11px;padding-top:6px;">
+          Scored at {{ m.customer_risk.scoring_snapshot }}. Ranked by churn
+          probability; revenue shown is observed, not forecast.
+        </div>
+      </td></tr>
+    </table>
+
+    {% if m.customer_risk.top_at_risk %}
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+           style="font-size:13px;border-collapse:collapse;padding-top:8px;">
+      <tr style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.5px;">
+        <td style="padding:12px 0 6px 0;">Highest-value at risk</td>
+        <td align="right" style="padding:12px 0 6px 0;">Days silent</td>
+        <td align="right" style="padding:12px 0 6px 0;">TTM revenue</td>
+      </tr>
+      {% for c in m.customer_risk.top_at_risk %}
+      <tr style="border-top:1px solid #e2e8f0;">
+        <td style="padding:8px 0;color:#0f172a;">
+          {{ c.customer_id }}
+          <span style="color:#94a3b8;">&middot; {{ c.region }}</span>
+        </td>
+        <td align="right" style="padding:8px 0;color:#64748b;">{{ c.days_since_last_order }}</td>
+        <td align="right" style="padding:8px 0;color:#0f172a;font-weight:600;">
+          {{ m.currency }} {{ c.ttm_revenue|money }}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+  </td></tr>
+
+  <!-- product movers -->
+  {% if m.top_products_gaining or m.top_products_declining %}
+  <tr><td style="padding:22px 28px 4px 28px;">
+    <div style="font-size:11px;font-weight:700;color:#64748b;letter-spacing:.9px;padding-bottom:10px;">
+      PRODUCT MOVERS
+    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;border-collapse:collapse;">
+      {% for p in m.top_products_gaining %}
+      <tr style="border-top:1px solid #e2e8f0;">
+        <td style="padding:8px 0;color:#0f172a;">{{ p.product }}</td>
+        <td align="right" style="padding:8px 0;color:#15803d;font-weight:600;">
+          +{{ m.currency }} {{ p.change|money }}
+        </td>
+      </tr>
+      {% endfor %}
+      {% for p in m.top_products_declining %}
+      <tr style="border-top:1px solid #e2e8f0;">
+        <td style="padding:8px 0;color:#0f172a;">{{ p.product }}</td>
+        <td align="right" style="padding:8px 0;color:#b91c1c;font-weight:600;">
+          {{ m.currency }} {{ p.change|money }}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </td></tr>
+  {% endif %}
+
+  <!-- anomalies -->
+  <tr><td style="padding:22px 28px 4px 28px;">
+    <div style="font-size:11px;font-weight:700;color:#64748b;letter-spacing:.9px;padding-bottom:10px;">
+      REVENUE ANOMALIES
+    </div>
+    {% if m.anomalies_in_period %}
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;border-collapse:collapse;">
+      {% for a in m.anomalies_in_period %}
+      <tr style="border-top:1px solid #e2e8f0;">
+        <td style="padding:8px 0;color:#0f172a;">
+          {{ a.date }}
+          <span style="color:{% if a.direction == 'spike' %}#15803d{% else %}#b91c1c{% endif %};font-weight:600;">
+            {{ a.direction }}
+          </span>
+        </td>
+        <td align="right" style="padding:8px 0;color:#64748b;">
+          expected {{ m.currency }} {{ a.expected_revenue|money }}
+        </td>
+        <td align="right" style="padding:8px 0;color:#0f172a;font-weight:600;">
+          {{ m.currency }} {{ a.revenue|money }}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <div style="font-size:13px;color:#64748b;">
+      No daily revenue anomalies detected in this period.
+    </div>
+    {% endif %}
+  </td></tr>
+
+  <!-- footer -->
+  <tr><td style="padding:24px 28px 26px 28px;">
+    <div style="border-top:1px solid #e2e8f0;padding-top:14px;font-size:11px;color:#94a3b8;line-height:1.6;">
+      Generated automatically {{ m.generated_at }} from
+      {{ m.period.trading_days }} trading days of transaction data.
+      {% if narrative.grounded %}
+        Narrative written by {{ narrative.model }} using only the figures in this
+        report — no estimated or inferred numbers.
+      {% else %}
+        Narrative generated deterministically ({{ narrative.model }}).
+        {% if narrative.note %}{{ narrative.note }}{% endif %}
+      {% endif %}
+    </div>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>

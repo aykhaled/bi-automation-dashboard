@@ -25,6 +25,11 @@ report:
   frequency: weekly
   recipient_role: "Head of E-commerce"
   tone: concise executive
+  model: gpt-4o-mini
+  max_words: 200
+  comparison_days: 7
+  top_movers: 5
+  output_dir: reports
 
 modeling:
   lookback_days: 365          # customer must have purchased within this window to be scored
