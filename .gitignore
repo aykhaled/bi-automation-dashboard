@@ -5,3 +5,7 @@ __pycache__/
 .DS_Store
 data/raw/
 .streamlit/secrets.toml
+
+# Generated reports: ignore all, except one committed sample as proof of output
+reports/*
+!reports/sample_weekly_report.html
